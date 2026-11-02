@@ -1,0 +1,14 @@
+[project]
+name = "training-fcs"
+version = "0.1.0"
+requires-python = ">=3.11"
+description = "Hardware-independent training baseline for a multirotor flight control system"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
