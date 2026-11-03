@@ -1,0 +1,54 @@
+{
+  "header": [
+    "record_type",
+    "record_id",
+    "unit_or_behavior",
+    "story_ids",
+    "requirement_ids",
+    "dependencies",
+    "applicability",
+    "setup_preconditions",
+    "inputs_or_injected_condition",
+    "expected_observable_result",
+    "status",
+    "blocking_decision_or_evidence",
+    "fixture_or_test_seam",
+    "verification_scope",
+    "notes"
+  ],
+  "record_types": [
+    "CONTEXT",
+    "PRINCIPLE",
+    "FIXTURE",
+    "CASE",
+    "GAP",
+    "OUT_OF_SCOPE"
+  ],
+  "case_statuses": [
+    "PROPOSED",
+    "BLOCKED",
+    "CONDITIONAL",
+    "NOT_APPLICABLE"
+  ],
+  "case_required_fields": [
+    "unit_or_behavior",
+    "story_ids",
+    "requirement_ids",
+    "dependencies",
+    "setup_preconditions",
+    "inputs_or_injected_condition",
+    "expected_observable_result",
+    "status"
+  ],
+  "trace_record_types": [
+    "CASE",
+    "GAP",
+    "OUT_OF_SCOPE"
+  ],
+  "story_range": {
+    "prefix": "SF-",
+    "first": 1,
+    "last": 35,
+    "digits": 3
+  }
+}
