@@ -1,0 +1,59 @@
+name: FCS CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pipeline:
+    name: Build, scan, and package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Build and test
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install .
+          python -m unittest discover -s tests -v
+
+      - name: Package firmware as Intel HEX
+        run: |
+          if [ ! -f build/firmware.elf ]; then
+            echo "::notice title=HEX packaging placeholder::No build/firmware.elf or configured STM32 target exists yet; HEX packaging is skipped."
+            exit 0
+          fi
+          sudo apt-get update
+          sudo apt-get install --yes binutils-arm-none-eabi
+          arm-none-eabi-objcopy -O ihex build/firmware.elf build/firmware.hex
+
+      - name: Upload Intel HEX artifact
+        if: ${{ hashFiles('build/firmware.hex') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: fcs-firmware-hex
+          path: build/firmware.hex
+          if-no-files-found: error
+
+      - name: Install security scanners
+        run: python -m pip install bandit pip-audit
+
+      - name: Scan project dependencies
+        run: pip-audit .
+
+      - name: Scan Python source
+        run: bandit --recursive src
+
+      - name: AWS deployment placeholder
+        run: echo "AWS deployment is not implemented; no credentials or deployment actions are configured."
