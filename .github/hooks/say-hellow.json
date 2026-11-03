@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "matcher": "Edit",
+        "command": "python .github/hooks/say-hellow.py",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}
