@@ -40,6 +40,25 @@ class TestFcsCore(unittest.TestCase):
         self.assertEqual(validate_sample(SensorSample(1.0, {"roll_rate": 0.0}), rule, 1.05, 1.0).reason, "out_of_order")
         self.assertEqual(validate_sample(SensorSample("bad", {"roll_rate": 0.0}), rule, 1.05).reason, "invalid_timestamp")
 
+    def test_ut_006_sf_006_classifies_configured_sensor_samples_with_reasons(self):
+        rule = SensorRule({"imu_rate": Bounds(-1.0, 1.0)}, max_age_s=1.0)
+        now = 10.0
+
+        valid = validate_sample(SensorSample(10.0, {"imu_rate": 0.0}), rule, now)
+        self.assertEqual(valid, SampleResult(True))
+
+        rejected_samples = (
+            ("stale", SensorSample(8.0, {"imu_rate": 0.0}), "stale"),
+            ("stopped_updates", SensorSample(8.0, {"imu_rate": 0.0}), "stale"),
+            ("missing", None, "missing"),
+            ("invalid_value", SensorSample(10.0, {"imu_rate": float("nan")}), "invalid:imu_rate"),
+            ("out_of_range", SensorSample(10.0, {"imu_rate": 2.0}), "out_of_range:imu_rate"),
+        )
+        for case, sample, reason in rejected_samples:
+            with self.subTest(case=case):
+                result = validate_sample(sample, rule, now)
+                self.assertEqual(result, SampleResult(False, reason))
+
 
     def test_arming_rejects_failed_and_missing_prerequisites_then_disarms(self):
         gate = ArmingGate()
